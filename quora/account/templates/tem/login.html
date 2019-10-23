@@ -1,0 +1,15 @@
+{% extends "tem/base.html" %}
+{% load staticfiles %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+      <h3>just Quora baby.</h3>
+<form enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name="" value="Login">
+        <a class="btn btn-success col-sm-12" href="/register/" role="button">Register</a>
+      </form>
+  </div>
+</div>
+{% endblock %}
