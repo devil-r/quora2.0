@@ -1,54 +1,45 @@
-from django.shortcuts import render
+from django.shortcuts import render , redirect
 from django.contrib.auth.forms import UserCreationForm
 from .forms import LoginForm, AccountRegisterForm
 from .models import Account
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from . import view_profile
+from django.contrib import messages
+
 # Create your views here.
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('/home')
+
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
+        if "username" not in request.POST:
             user = authenticate(
-                username=form.cleaned_data['email'].lower(),
-                password=form.cleaned_data['password']
+                username=request.POST.get('email','something').lower(),
+                password=request.POST.get('password','')
             )
-            login(request, user)
+            if user is None:
+                return render(request, 'login.html')
+            login(request,user)
             request.session['alert_success'] = "Successfully logged in."
-            return HttpResponseRedirect('/home')
-    else:
-        form = LoginForm()
-    return render(request, 'tem/login.html', {'form':form})
 
-
-# For allowing registration
-def register_view(request):
-    if request.method == 'POST':
-        form = AccountRegisterForm(request.POST)
-        if form.is_valid():
+            return redirect('/home')
+        else:
+            
             view_profile.register_user(
-                form.cleaned_data['email'],
-                form.cleaned_data['password'],
-                form.cleaned_data['username'],
+                request.POST['email'],
+                request.POST['password'],
+                request.POST['username'],
                 False
             )
             #    current_site = get_current_site(request)
             #    mail_subject = 'Activate your account'
             user = authenticate(
-                username=form.cleaned_data['email'].lower(),
-                password=form.cleaned_data['password']
+                username=request.POST['email'].lower(),
+                password=request.POST['password']
             )
-            login(request, user)
-            request.session['alert_success'] = "Successfully registered with the portal."
 
-            return HttpResponseRedirect('/home')
+            return HttpResponseRedirect('/')
 
-
-    else:
-        form = AccountRegisterForm()
-    return render(request, 'tem/register.html', {'form':form})
-
-def home_view(request):
-    return render(request,'tem/home.html')
+    return render(request, 'login.html')

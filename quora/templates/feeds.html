@@ -1,0 +1,50 @@
+{% extends "base1.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<ul class="section__main__listView" id="listView">
+    <li>
+        <div class="addQueProfileView"><img src="{% static "img/test.png" %}" alt="Profile Pic">
+            <h3>{{ account.username }}</h3>
+        </div>
+        <h1 onclick="openModel(this)">What is your question?</h1>
+    </li>
+
+{% for a_info in answers %}
+    <li>
+          <h1 class="queTitle">{{ a_info.answer.question.title}}</h1>
+        <div class="addQueProfileView"><img src="{% static "img/test.png" %}" alt="Profile Pic">
+            <div>
+                <h3 class="quePostedUsrName">
+
+                {%if a_info.is_anonymous == False%}
+
+                  {% for key,value in accounts.items %}
+                    {% if key == a_info%}
+                      {{value}}
+                    {%endif%}
+                  {%endfor%}
+                {% else %}
+                  Anonymous
+                {% endif %}
+                </h3>
+                <p>{{ answer.createdAt }}</p>
+            </div>
+        </div>
+
+        <div class="ansView"> {{a_info.text}} </div>
+            <div class="bottomControll">
+              <a href='/home/upvote/{{a_info.answer.pk}}'><i class="fa fa-heart"></i></a>  <span> {{ a_info.upvotes }} </span>
+              <!-- <i class="fa fa-share"></i> -->
+              <!-- <div class="header__que_btn"> -->
+                <!-- <a href="/home/bookmark/{{ a_info.answer.pk }}" role="button" >Bookmark</a> -->
+                <a href="/home/bookmark/{{ a_info.answer.pk }}" role="button" style="margin-left: 0px;"><img height="20px" width="15px" src="{%static "/img/book.png" %}" alt=""></a>
+            <!-- </div> -->
+          </div>
+
+    </li>
+{% endfor %}
+
+
+</ul>
+{% endblock content %}

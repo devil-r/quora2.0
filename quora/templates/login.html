@@ -1,0 +1,15 @@
+{% extends "base2.html" %}
+{% load static from staticfiles%}
+{% block body_block %}
+<div class="container" style = "margin-top : 300px; ">
+  <div class="jumbotron" style = "background : #ffffff; ">
+      <h3>Quora 2.0 </h3>
+<form enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name="" value="Login">
+        <a class="btn btn-success col-sm-12" href="/register/" role="button">Register</a>
+      </form>
+  </div>
+</div>
+{% endblock %}
